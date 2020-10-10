@@ -1,6 +1,6 @@
 const db = require('../../database/database');
 
-const TABLE_NAME = 'users';
+const TABLE_NAME = 'tasks';
 
 const getAll = async () => {
     return db.getTable(TABLE_NAME);
@@ -11,24 +11,24 @@ const getById = async id => {
     return user;
 };
 
-const update = async (id, user) => {
-    const newUser = db.updateEntity(TABLE_NAME, id, user);
+const update = async (id, task) => {
+    const newUser = db.updateEntity(TABLE_NAME, id, task);
     return newUser;
 };
 
-const deleteUser = async id => {
+const deleteTask = async id => {
     return db.deleteEntity(TABLE_NAME, id);
 };
 
-const add = async user => {
-    db.addEntity(TABLE_NAME, user);
-    return user;
+const add = async task => {
+    db.addEntity(TABLE_NAME, task);
+    return task;
 };
 
 module.exports = {
     getAll,
     getById,
     update,
-    deleteUser,
+    deleteTask,
     add
 };
