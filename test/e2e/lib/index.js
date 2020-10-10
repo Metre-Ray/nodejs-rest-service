@@ -9,6 +9,6 @@ debug('HOST', host);
 const request = supertest(host);
 
 module.exports = {
-  request,
-  routes
+    request,
+    routes
 };
