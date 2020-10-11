@@ -8,7 +8,7 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/').post(async (req, res) => {
-    const user = await usersService.addUser(User.fromRequest(req.body));
+    const user = await usersService.addUser(new User(req.body));
     res.json(User.toResponse(user));
 });
 

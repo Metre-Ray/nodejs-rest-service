@@ -1,13 +1,18 @@
 const getTable = tableName => DB[tableName] || null;
-const getEntity = (tableName, id) =>
-    DB[tableName].find(el => el.id === id) || null;
+const getEntity = (tableName, id) => {
+    const entity = DB[tableName].filter(el => el.id === id) || null;
+    if (entity.length === 0) {
+        return null;
+    }
+    return entity;
+};
 const updateEntity = (tableName, id, newEntity) => {
     const entityIndex = DB[tableName].findIndex(item => item.id === id);
     if (entityIndex === -1) {
         return null;
     }
-    DB[entityIndex] = newEntity;
-    return newEntity;
+    DB[tableName][entityIndex] = { id, ...newEntity };
+    return DB[tableName][entityIndex];
 };
 const addEntity = (tableName, entity) => DB[tableName].push(entity);
 const deleteEntity = (tableName, id) => {
@@ -15,20 +20,30 @@ const deleteEntity = (tableName, id) => {
     if (index === -1) {
         return null;
     }
-    const entity = DB[tableName].splice(index, 1);
-    return entity;
+    const removedEntity = DB[tableName].splice(index, 1)[0];
+    if (tableName === 'boards') {
+        DB.tasks = DB.tasks.filter(task => task.boardId !== id);
+    } else if (tableName === 'users') {
+        DB.tasks.forEach(task => {
+            if (task.userId === id) {
+                task.userId = null;
+            }
+        });
+    }
+    return removedEntity;
 };
-
-// const getEntityByField = (tableName, field) => {
-//     // TODO
-// };
+const getEntityByField = (tableName, field, value) => {
+    const entity = DB[tableName].filter(item => item[field] === value);
+    return entity.length ? entity : null;
+};
 
 const DBInterface = {
     getEntity,
     getTable,
     updateEntity,
     addEntity,
-    deleteEntity
+    deleteEntity,
+    getEntityByField
 };
 
 const DB = {
@@ -94,9 +109,18 @@ const DB = {
             title: 'task-title-3',
             order: 'order-3',
             description: 'very intricate task',
-            userId: '456',
+            userId: '789',
             boardId: 'bid-2',
             columnId: 'col-id-5'
+        },
+        {
+            id: 'task-id-4',
+            title: 'task-title-4',
+            order: 'order-4',
+            description: 'funny task',
+            userId: '123',
+            boardId: 'bid-2',
+            columnId: 'col-id-6'
         }
     ]
 };

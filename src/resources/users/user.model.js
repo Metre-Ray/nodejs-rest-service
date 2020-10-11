@@ -6,7 +6,7 @@ class User {
         login = 'user',
         password = 'P@55w0rd',
         id = uuid()
-    } = {}) {
+    }) {
         this.id = id;
         this.name = name;
         this.login = login;

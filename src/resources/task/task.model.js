@@ -29,7 +29,15 @@ class Task {
             boardId,
             columnId
         } = task;
-        return { id, title, order, description, userId, boardId, columnId };
+        return {
+            id,
+            title,
+            order,
+            description,
+            userId,
+            columnId,
+            boardId
+        };
     }
 }
 

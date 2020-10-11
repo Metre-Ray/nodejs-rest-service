@@ -8,7 +8,7 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/').post(async (req, res) => {
-    const board = await boardsService.addBoard(req.body);
+    const board = await boardsService.addBoard(new Board(req.body));
     res.json(Board.toResponse(board));
 });
 

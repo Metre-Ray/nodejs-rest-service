@@ -7,8 +7,11 @@ const getAll = async () => {
 };
 
 const getById = async id => {
-    const user = db.getEntity(TABLE_NAME, id) || null;
-    return user;
+    const users = db.getEntity(TABLE_NAME, id);
+    if (users.length) {
+        return users[0];
+    }
+    return null;
 };
 
 const update = async (id, user) => {

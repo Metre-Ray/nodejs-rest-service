@@ -6,14 +6,16 @@ const getAll = async () => {
     return db.getTable(TABLE_NAME);
 };
 
+const getByBoardId = async id => {
+    return db.getEntityByField(TABLE_NAME, 'boardId', id);
+};
+
 const getById = async id => {
-    const user = db.getEntity(TABLE_NAME, id) || null;
-    return user;
+    return db.getEntity(TABLE_NAME, id);
 };
 
 const update = async (id, task) => {
-    const newUser = db.updateEntity(TABLE_NAME, id, task);
-    return newUser;
+    return db.updateEntity(TABLE_NAME, id, task);
 };
 
 const deleteTask = async id => {
@@ -28,6 +30,7 @@ const add = async task => {
 module.exports = {
     getAll,
     getById,
+    getByBoardId,
     update,
     deleteTask,
     add
