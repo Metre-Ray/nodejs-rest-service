@@ -5,11 +5,18 @@ const YAML = require('yamljs');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/board/board.router');
 const taskRouter = require('./resources/task/task.router');
+const logger = require('./logger/logger');
+const messageFromRequest = require('./utils/messageFromRequest');
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+    logger.info(messageFromRequest(req));
+    next();
+});
 
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
@@ -22,9 +29,17 @@ app.use('/', (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).send('Something went wrong');
-    next();
+    logger.error(messageFromRequest(req, `Server error ${err.message}`));
+    res.status(500).send('Internal Server Error');
+    next(err);
+});
+
+process.on('uncaughtException', error => {
+    logger.error(`Uncaught Exception: ${error.message}`);
+});
+
+process.on('unhandledRejection', reason => {
+    logger.error(`Unhandled Rejection: ${reason.message}`);
 });
 
 app.use('/users', userRouter);
