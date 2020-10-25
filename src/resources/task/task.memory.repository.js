@@ -1,30 +1,29 @@
-const db = require('../../database/database');
-
-const TABLE_NAME = 'tasks';
+const Task = require('./task.model');
 
 const getAll = async () => {
-    return db.getTable(TABLE_NAME);
+    return await Task.find({});
 };
 
 const getByBoardId = async id => {
-    return db.getEntityByField(TABLE_NAME, 'boardId', id);
+    return await Task.find({ boardId: id });
 };
 
 const getById = async id => {
-    return db.getEntity(TABLE_NAME, id);
+    return await Task.findOne({ _id: id });
 };
 
 const update = async (id, task) => {
-    return db.updateEntity(TABLE_NAME, id, task);
+    const newTask = await Task.updateOne({ _id: id }, task);
+    return newTask;
 };
 
 const deleteTask = async id => {
-    return db.deleteEntity(TABLE_NAME, id);
+    const count = (await Task.deleteOne({ _id: id })).deletedCount;
+    return count;
 };
 
 const add = async task => {
-    db.addEntity(TABLE_NAME, task);
-    return task;
+    return await Task.create(task);
 };
 
 module.exports = {

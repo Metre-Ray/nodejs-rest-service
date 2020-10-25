@@ -1,52 +1,6 @@
-// this file is no longer used
-
-const getTable = tableName => DB[tableName] || null;
-const getEntity = (tableName, id) => {
-    const entity = DB[tableName].filter(el => el.id === id) || null;
-    if (entity.length === 0) {
-        return null;
-    }
-    return entity;
-};
-const updateEntity = (tableName, id, newEntity) => {
-    const entityIndex = DB[tableName].findIndex(item => item.id === id);
-    if (entityIndex === -1) {
-        return null;
-    }
-    DB[tableName][entityIndex] = { id, ...newEntity };
-    return DB[tableName][entityIndex];
-};
-const addEntity = (tableName, entity) => DB[tableName].push(entity);
-const deleteEntity = (tableName, id) => {
-    const index = DB[tableName].findIndex(entity => entity.id === id);
-    if (index === -1) {
-        return null;
-    }
-    const removedEntity = DB[tableName].splice(index, 1)[0];
-    if (tableName === 'boards') {
-        DB.tasks = DB.tasks.filter(task => task.boardId !== id);
-    } else if (tableName === 'users') {
-        DB.tasks.forEach(task => {
-            if (task.userId === id) {
-                task.userId = null;
-            }
-        });
-    }
-    return removedEntity;
-};
-const getEntityByField = (tableName, field, value) => {
-    const entity = DB[tableName].filter(item => item[field] === value);
-    return entity.length ? entity : null;
-};
-
-const DBInterface = {
-    getEntity,
-    getTable,
-    updateEntity,
-    addEntity,
-    deleteEntity,
-    getEntityByField
-};
+const User = require('../resources/users/user.model');
+const Task = require('../resources/task/task.model');
+const Board = require('../resources/board/board.model');
 
 const DB = {
     users: [
@@ -127,4 +81,10 @@ const DB = {
     ]
 };
 
-module.exports = DBInterface;
+const populateDB = () => {
+    DB.users.forEach(user => User.create(user));
+    DB.boards.forEach(board => Board.create(board));
+    DB.tasks.forEach(task => Task.create(task));
+};
+
+module.exports = populateDB;

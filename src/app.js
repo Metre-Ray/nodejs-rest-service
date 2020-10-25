@@ -7,10 +7,19 @@ const boardRouter = require('./resources/board/board.router');
 const taskRouter = require('./resources/task/task.router');
 const logger = require('./logger/logger');
 const messageFromRequest = require('./utils/messageFromRequest');
+const cors = require('cors');
+const helmet = require('helmet');
+const { connectToDB } = require('./database/db.client');
+// const populateDB = require('./utils/populateDB'); // - use to put initial data to database
+// connectToDB(populateDB); // - use to put initial data to database
+
+connectToDB(); // use after putting initial data to database
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
+app.use(helmet());
+app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
