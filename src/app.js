@@ -5,11 +5,13 @@ const YAML = require('yamljs');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/board/board.router');
 const taskRouter = require('./resources/task/task.router');
+const loginRouter = require('./resources/login/login.router');
 const logger = require('./logger/logger');
 const messageFromRequest = require('./utils/messageFromRequest');
 const cors = require('cors');
 const helmet = require('helmet');
 const { connectToDB } = require('./database/db.client');
+const { checkToken } = require('./resources/login/login.service');
 // const populateDB = require('./utils/populateDB'); // - use to put initial data to database
 // connectToDB(populateDB); // - use to put initial data to database
 
@@ -51,8 +53,10 @@ process.on('unhandledRejection', reason => {
     logger.error(`Unhandled Rejection: ${reason.message}`);
 });
 
+app.use('/', checkToken);
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
+app.use('/login', loginRouter);
 
 module.exports = app;

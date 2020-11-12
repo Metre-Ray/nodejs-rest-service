@@ -1,5 +1,6 @@
 const User = require('./user.model');
 const Task = require('../task/task.model');
+const { hashPassword } = require('../../utils/hashHelper');
 
 const getAll = async () => {
     return await User.find({});
@@ -8,6 +9,11 @@ const getAll = async () => {
 const getById = async id => {
     const user = await User.findOne({ _id: id });
     return user;
+};
+
+const getByProperty = async (prop, value) => {
+    const users = await User.find({ [prop]: value });
+    return users;
 };
 
 const update = async (id, user) => {
@@ -24,7 +30,9 @@ const deleteUser = async id => {
 };
 
 const add = async user => {
-    return await User.create(user);
+    const hashedPassword = await hashPassword(user.password);
+    const newUser = { ...user, password: hashedPassword };
+    return await User.create(newUser);
 };
 
 module.exports = {
@@ -32,5 +40,6 @@ module.exports = {
     getById,
     update,
     deleteUser,
-    add
+    add,
+    getByProperty
 };
